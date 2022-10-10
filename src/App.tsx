@@ -3,26 +3,29 @@ import logo from "./logo.svg";
 import "./App.css";
 
 function App() {
-  const [timer, setTimer] = useState("Start");
-  const [time, setTime] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+  const [timeMs, setTimeMs] = useState(0);
+  const [timeSec, setTimeSec] = useState(0);
+  const [timeMin, setTimeMin] = useState(0);
+
+  const handleStart = () => {
+    setIsActive(!isActive);
+  };
 
   return (
     <div className="container mx-auto mt-4">
       <div>Hooks - Prop Drillings</div>
-      <div>Stopwatch: </div>
+      <div>
+        Stopwatch: {timeMin}:{timeSec}:{timeMs}
+      </div>
       <button
         className="bg-blue-400 p-2 rounded shadow"
         onClick={() => {
-          if (timer === "Start") {
-            setTimer("Stop");
-          }
-          if (timer === "Stop") {
-            setTimer("Start");
-          }
-          console.log("Change from Start to Stop. Activate Timer/ Stop Timer");
+          handleStart();
+          console.log(isActive);
         }}
       >
-        {timer}
+        Start/Stop
       </button>
       <div>
         <ul>
