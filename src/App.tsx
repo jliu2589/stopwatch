@@ -5,23 +5,34 @@ import { time } from "console";
 
 function App() {
   const [isActive, setIsActive] = useState(false);
-  const [timeMs, setTimeMs] = useState(0);
-  const [timeSec, setTimeSec] = useState(0);
-  const [timeMin, setTimeMin] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const [names, setNames] = useState([]);
 
+  const list = ["John", "Sally", "Tim", "Bob"];
+
+  // Stop watch
   useEffect(() => {
     let interval: any = null;
 
     if (isActive) {
       interval = setInterval(() => {
-        setTimeMs((prevTime) => prevTime + 10);
-      }, 10);
+        setSeconds((seconds) => seconds + 0.1);
+      }, 100);
     } else {
       clearInterval(interval);
     }
 
     return () => clearInterval(interval);
   }, [isActive]);
+
+  // fetch
+  useEffect(() => {
+    if (seconds > 2) {
+      fetch("/names.json")
+        .then((res) => res.json())
+        .then((data) => setNames(data));
+    }
+  }, [seconds > 2]);
 
   const handleStart = () => {
     setIsActive(!isActive);
@@ -30,9 +41,7 @@ function App() {
   return (
     <div className="container mx-auto mt-4">
       <div>Hooks - Prop Drillings</div>
-      <div>
-        Stopwatch: {timeMin}:{timeSec}:{timeMs}
-      </div>
+      <div>Stopwatch: {seconds.toFixed(1)}</div>
       <button
         className="bg-blue-400 p-2 rounded shadow"
         onClick={() => {
@@ -44,7 +53,7 @@ function App() {
       </button>
       <div>
         <ul>
-          <li>list</li>
+          <li>{JSON.stringify(names)}</li>
         </ul>
       </div>
     </div>
