@@ -4,9 +4,9 @@ import { useApplicationState } from "./store";
 const TimerDisplay: React.FunctionComponent<{
   seconds: number;
 }> = ({ seconds }) => (
-  <div>
+  <div className="mt-3">
     <span>Stopwatch: </span>
-    <span>{seconds.toFixed(1)}</span>
+    <span className="font-bold">{seconds.toFixed(1)}</span>
   </div>
 );
 
@@ -16,7 +16,12 @@ const TimerToggle: React.FunctionComponent<{
   onToggle: () => void;
 }> = ({ isActive, onToggle }) => (
   <div>
-    <button onClick={onToggle}>{isActive ? "Stop" : "Start"}</button>
+    <button
+      onClick={onToggle}
+      className="bg-blue-600 text-white p-3 mt-3 border-gray-50 rounded-lg"
+    >
+      {isActive ? "Stop" : "Start"}
+    </button>
   </div>
 );
 
@@ -34,8 +39,8 @@ const Names: React.FunctionComponent<{
 function App() {
   const { seconds, isActive, names, onToggle } = useApplicationState();
   return (
-    <div>
-      <h1>Hooks - Prop Drilling</h1>
+    <div className="container mx-auto text-center mt-4">
+      <h1 className="text-xl ">Hooks - Prop Drilling</h1>
       <TimerDisplay seconds={seconds} />
       <TimerToggle isActive={isActive} onToggle={onToggle} />
       <Names names={names} />
