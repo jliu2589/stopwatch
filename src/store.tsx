@@ -27,9 +27,10 @@ export const useApplicationState = (): ApplicationState => {
   //Fetch
   useEffect(() => {
     if (seconds > 2) {
-      fetch("./names.json")
+      console.log("more than 2 seconds");
+      fetch("/names.json")
         .then((res) => res.json())
-        .then((data) => setData);
+        .then((data) => setData(data));
     }
   }, [seconds > 2]);
 
