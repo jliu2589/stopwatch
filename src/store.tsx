@@ -16,17 +16,11 @@ export const useApplicationState = (): ApplicationState => {
 
   //Stop Watch
   useEffect(() => {
-    const timer = setInterval(() => {
-      (seconds) => {
-        seconds + 0.1;
-      };
-    }, 100);
-
     if (isActive) {
-      setSeconds(timer);
-    }
-    if (isActive === false) {
-      clearInterval(timer);
+      const timer = setInterval(() => {
+        setSeconds((seconds) => seconds + 0.1);
+      }, 100);
+      return () => clearInterval(timer);
     }
   }, [isActive]);
 
