@@ -14,6 +14,31 @@ export const useApplicationState = (): ApplicationState => {
     names: string[];
   }>();
 
+  //Stop Watch
+  useEffect(() => {
+    const timer = setInterval(() => {
+      (seconds) => {
+        seconds + 0.1;
+      };
+    }, 100);
+
+    if (isActive) {
+      setSeconds(timer);
+    }
+    if (isActive === false) {
+      clearInterval(timer);
+    }
+  }, [isActive]);
+
+  //Fetch
+  useEffect(() => {
+    if (seconds > 2) {
+      fetch("./names.json")
+        .then((res) => res.json())
+        .then((data) => setData);
+    }
+  }, [seconds > 2]);
+
   return {
     seconds,
     isActive,
