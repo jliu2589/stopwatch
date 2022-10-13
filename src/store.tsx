@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, createContext, useContext } from "react";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { useInterval } from "react-use";
 
 interface ApplicationState {
   seconds: number;
@@ -7,32 +9,22 @@ interface ApplicationState {
   onToggle: () => void;
 }
 
-export const useApplicationState = (): ApplicationState => {
+const ApplicationContext = createContext<ApplicationState>({
+  seconds: 0,
+  isActive: false,
+  onToggle: () => {},
+});
+
+const useApplicationState = (): ApplicationState => {
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [data, setData] = useState<{
+  const { data } = useQuery<{
     names: string[];
-  }>();
+  }>("names", () => fetch("/names.json").then((res) => res.json()), {
+    enabled: seconds > 2,
+  });
 
-  //Stop Watch
-  useEffect(() => {
-    if (isActive) {
-      const timer = setInterval(() => {
-        setSeconds((seconds) => seconds + 0.1);
-      }, 100);
-      return () => clearInterval(timer);
-    }
-  }, [isActive]);
-
-  //Fetch
-  useEffect(() => {
-    if (seconds > 2) {
-      console.log("more than 2 seconds");
-      fetch("/names.json")
-        .then((res) => res.json())
-        .then((data) => setData(data));
-    }
-  }, [seconds > 2]);
+  useInterval(() => setSeconds((seconds) => seconds + 0.1), isActive ? 100 : null);
 
   return {
     seconds,
@@ -41,3 +33,15 @@ export const useApplicationState = (): ApplicationState => {
     names: data?.names,
   };
 };
+
+const queryClient = new QueryClient();
+
+const StopwatchContextProvider: React.FunctionComponent = ({ children }) => <ApplicationContext.Provider value={useApplicationState()}>{children}</ApplicationContext.Provider>;
+
+export const ApplicationContextProvider: React.FunctionComponent = ({ children }) => (
+  <QueryClientProvider client={queryClient}>
+    <StopwatchContextProvider>{children}</StopwatchContextProvider>
+  </QueryClientProvider>
+);
+
+export const useApplicationContext = () => useContext(ApplicationContext);
